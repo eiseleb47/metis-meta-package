@@ -43,7 +43,7 @@ clone_or_update "$REPO_B" "$TARGET_B"
 
 # Export the build-time environment variables so they are visible to `uv sync` when run from this script
 export PYCPL_RECIPE_DIR="$TARGET_A/metisp/pyrecipes/"
-export PYESOREX_PLUGIN_DIR="$PYCPL_RECIPE_DIR"
+export PYESOREX_PLUGIN_DIR="$TARGET_A/metisp/pyrecipes/"
 
 echo "Exported build-time variables:"
 echo "  PYCPL_RECIPE_DIR=$PYCPL_RECIPE_DIR"
@@ -54,9 +54,9 @@ ENV_FILE="$ROOT_DIR/.env"
 cat > "$ENV_FILE" <<EOF
 # .env — variables for running inside the uv-managed environment
 # These lines are exported when this file is sourced by an interactive shell:
-export PYTHONPATH="$ROOT_DIR/external/METIS_Pipeline/metisp/pymetis/src/"
-export PYCPL_RECIPE_DIR="$ROOT_DIR/external/METIS_Pipeline/metisp/pyrecipes/"
-export PYESOREX_PLUGIN_DIR="\$PYCPL_RECIPE_DIR"
+PYTHONPATH="$ROOT_DIR/external/METIS_Pipeline/metisp/pymetis/src/"
+PYCPL_RECIPE_DIR="$ROOT_DIR/external/METIS_Pipeline/metisp/pyrecipes/"
+PYESOREX_PLUGIN_DIR="$ROOT_DIR/external/METIS_Pipeline/metisp/pyrecipes/"
 EOF
 
 echo ".env written to $ENV_FILE"
@@ -68,6 +68,8 @@ if command -v uv >/dev/null 2>&1; then
 else
   echo "Warning: 'uv' is not installed or not on PATH."
   echo "Install uv (e.g. 'python -m pip install --user uv' or use pipx) and re-run this script."
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  source $HOME/.env/bin/activate
   exit 1
 fi
 
