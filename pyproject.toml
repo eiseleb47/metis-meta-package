@@ -1,0 +1,31 @@
+[project]
+name = "metis-meta-package"
+version = "0.1.0"
+description = "Meta package that installs pycpl, pyesorex, edps, adari_core for external users"
+readme = "README.md"
+authors = [{name = "Your Name", email = "you@example.com"}]
+license = {text = "GPL-3.0-or-later"}  # see notes below about license compatibility
+requires-python = ">=3.11"
+
+# Declare the runtime dependencies we want installed for users
+dependencies = [
+  "pycpl==1.0.3.post1",   # prefer ivh's re-packaged pycpl
+  "edps",
+  "pyesorex",
+  "adari_core"
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+# Extra package indexes so uv (and pip under the hood) can find these packages.
+# ivh provides a simple index for pycpl; ESO provides the libraries on its FTP index.
+extra-index-url = [
+  "https://ivh.github.io/pycpl/simple/",
+  "https://ftp.eso.org/pub/dfs/pipelines/libraries/"
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/metis-meta-package"]
