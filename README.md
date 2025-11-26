@@ -13,9 +13,6 @@ Clone the repository:
 Enter the repository locally:  
 `cd metis-meta-package`  
 
-Make the script executable:  
-`chmod +x bootstrap.sh`  
-
 Run the script:  
 `./bootstrap.sh` 
 
