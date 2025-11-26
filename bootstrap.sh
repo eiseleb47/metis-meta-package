@@ -47,6 +47,10 @@ clone_or_update() {
   fi
 }
 
+echo ""
+echo "Cloning METIS Pipeline and METIS Simulations: "
+echo ""
+
 # Clone or update both repos
 clone_or_update "$REPO_A" "$TARGET_A"
 clone_or_update "$REPO_B" "$TARGET_B"
@@ -76,15 +80,24 @@ case $uv_yesno in
 	[Yy]|[Yy][Ee][Ss])
 		echo "Installing uv:"
   		curl -LsSf https://astral.sh/uv/install.sh | sh
-  		source $HOME/.env/bin/activate
-		echo "Running: uv sync"
-		uv sync
 		;;
 	*)
 		echo "uv will not be installed"
-		uv sync
 		;;
 esac
+
+#source $HOME/.local/bin/env
+echo "Running: uv sync"
+uv sync
+
+echo "Executing EDPS for the first time and editing config files: "
+
+uv run --env-file .env edps
+uv run --env-file .env edps -s
+
+sed -i "s|^workflow_dir=.*|workflow_dir=$TARGET_A/metisp/workflows|" "$HOME/.edps/application.properties"
+sed -i "s|^esorex_path=.*|esorex_path=pyesorex|" "$HOME/.edps/application.properties"
+
 echo "Bootstrap finished. To run commands inside the uv-managed environment with .env loaded:"
 echo "uv run --env-file .env \$your_command"
 echo " then use uv run to execute inside the project environment, e.g."
