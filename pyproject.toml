@@ -5,7 +5,7 @@ description = "Meta package that installs pycpl, pyesorex, edps, adari_core for 
 readme = "README.md"
 authors = [{name = "Your Name", email = "you@example.com"}]
 license = {text = "GPL-3.0-or-later"}  # see notes below about license compatibility
-requires-python = "==3.12.0"
+requires-python = ">=3.11, <3.14"
 
 # Declare the runtime dependencies we want installed for users
 dependencies = [
