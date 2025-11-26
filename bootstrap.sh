@@ -89,17 +89,16 @@ esac
 #source $HOME/.local/bin/env
 echo "Running: uv sync"
 
-uv sync 2>/dev/null
-rc=$?
-
-if [ "$rc" -eq 127 ]; then
-	. "$HOME/.local/bin/.env"
+if command -v uv >/dev/null 2>&1; then
+	uv sync
+else
+	. "$HOME/.local/bin/env"
 	uv sync
 fi
 
 echo "Executing EDPS for the first time and editing config files: "
 
-uv run --env-file .env edps 2>/dev/null
+uv run --env-file .env edps 
 uv run --env-file .env edps -s > /dev/null 2>&1
 
 sed -i "s|^workflow_dir=.*|workflow_dir=$TARGET_A/metisp/workflows|" "$HOME/.edps/application.properties"
