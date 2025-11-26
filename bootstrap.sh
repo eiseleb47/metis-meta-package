@@ -18,15 +18,38 @@ REPO_B="https://github.com/AstarVienna/METIS_Simulations.git"
 TARGET_A="$EXTERNAL_DIR/METIS_Pipeline"
 TARGET_B="$EXTERNAL_DIR/METIS_Simulations"
 
+simulations=$(cat << 'EOF'
+1. All modes (Caution! Can take quite some time [20-40min])
+2. Image N
+3. Image LM
+4. LSS N
+5. LSS LM
+6. IFU
+EOF
+)
+
+echo ""
 echo "========================================"
 echo "Welcome to the METIS Pipeline installer!"
 echo "========================================"
 echo ""
 echo "This script will clone the necessary git repositories, give you the option to install the uv package manager, as well as use it to install the pipeline dependencies. You are able to use the pipeline afterwards my executing: uv run --env-file .env 'your_command'"
 echo ""
-echo "One last question before the installation:"
-read -p "Do you want to automatically install uv? (It is needed for the installation): " uv_yesno
-
+echo "Two questions before the installation:"
+read -p "1. Do you want to automatically install uv? (It is needed for the installation)[y/n]: " uv_yesno
+read -p "2. Do you wish to run METIS Simulations to create simulation data for the pipeline? (You can choose which one in the next step)[y/n]: " sim_yesno
+case $sim_yesno in
+	[Yy]|[Yy][Ee][Ss])
+		echo ""
+		printf "Which simulation modes would you like to run?\n$simulations\n"
+		echo ""
+		read -p "> " sim_num
+		;;
+	*)
+		echo "No simulations selected"
+		;;
+esac
+echo ""
 
 # Make external dir
 mkdir -p "$EXTERNAL_DIR"
@@ -73,7 +96,9 @@ PYCPL_RECIPE_DIR="$ROOT_DIR/external/METIS_Pipeline/metisp/pyrecipes/"
 PYESOREX_PLUGIN_DIR="$ROOT_DIR/external/METIS_Pipeline/metisp/pyrecipes/"
 EOF
 
+echo ""
 echo ".env written to $ENV_FILE"
+echo ""
 
 # Run uv sync to create the venv & install declared dependencies
 case $uv_yesno in
@@ -88,6 +113,7 @@ esac
 
 #source $HOME/.local/bin/env
 echo "Running: uv sync"
+echo ""
 
 if command -v uv >/dev/null 2>&1; then
 	uv sync
@@ -96,7 +122,9 @@ else
 	uv sync
 fi
 
-echo "Executing EDPS for the first time and editing config files: "
+echo "Executing EDPS for the first time and editing config files"
+echo "----------------------------------------------------------"
+echo ""
 
 uv run --env-file .env edps 
 uv run --env-file .env edps -s > /dev/null 2>&1
@@ -104,6 +132,66 @@ uv run --env-file .env edps -s > /dev/null 2>&1
 sed -i "s|^workflow_dir=.*|workflow_dir=$TARGET_A/metisp/workflows|" "$HOME/.edps/application.properties"
 sed -i "s|^esorex_path=.*|esorex_path=pyesorex|" "$HOME/.edps/application.properties"
 
+case $sim_yesno in
+	[Yy]|[Yy][Ee][Ss])
+		env_dir=$(pwd)
+		scripts="
+		$TARGET_B/Simulations/python/imgLM.py
+		$TARGET_B/Simulations/python/imgN.py
+		$TARGET_B/Simulations/python/lssLM.py
+		$TARGET_B/Simulations/python/lssN.py
+		$TARGET_B/Simulations/python/ifu.py
+		$TARGET_B/Simulations/python/calib.py
+		"
+		echo ""
+		echo "Running simulations"
+		echo "-------------------"
+		echo ""
+		echo "Downloading instrument packages: "
+		echo ""
+		(
+			cd "$TARGET_B/Simulations" || exit 1
+			uv run --project "$env_dir" --env-file $env_dir/.env python $TARGET_B/Simulations/python/downloadPackages.py
+			if [ $sim_num -eq "1" ]; then
+				echo "Running all Simulations"
+				echo "-----------------------"
+				echo ""
+				for s in $scripts; do
+					uv run --project "$env_dir" --env-file $env_dir/.env python "$s"
+				done
+			elif [ $sim_num -eq "2" ]; then
+				echo "Running Image N Simulations"
+				echo "---------------------------"
+				echo ""
+				uv run --project "$env_dir" --env-file $env_dir/.env python $TARGET_B/Simulations/python/imgN.py
+			elif [ $sim_num -eq "3" ]; then
+				echo "Running Image LM Simulations"
+				echo "----------------------------"
+				echo ""
+				uv run --project "$env_dir" --env-file $env_dir/.env python $TARGET_B/Simulations/python/imgLM.py
+			elif [ $sim_num -eq "4" ]; then
+				echo "Running LSS N Simulations"
+				echo "-------------------------"
+				echo ""
+				uv run --project "$env_dir" --env-file $env_dir/.env python $TARGET_B/Simulations/python/lssN.py
+			elif [ $sim_num -eq "5" ]; then
+				echo "Running LSS LM Simulations"
+				echo "--------------------------"
+				echo ""
+				uv run --project "$env_dir" --env-file $env_dir/.env python $TARGET_B/Simulations/python/lssLM.py
+			elif [ $sim_num -eq "6" ]; then
+				echo "Running IFU Simulations"
+				echo "-----------------------"
+				echo ""
+				uv run --project "$env_dir" --env-file $env_dir/.env python $TARGET_B/Simulations/python/ifu.py
+			fi
+		)
+		;;
+	*)
+		;;
+esac
+
+echo ""
 echo "Bootstrap finished. To run commands inside the uv-managed environment with .env loaded:"
 echo "uv run --env-file .env \$your_command"
 echo " then use uv run to execute inside the project environment, e.g."

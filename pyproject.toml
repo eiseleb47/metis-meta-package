@@ -12,7 +12,9 @@ dependencies = [
   "pycpl==1.0.3.post1",   # prefer ivh's re-packaged pycpl
   "edps",
   "pyesorex",
-  "adari_core"
+  "adari_core",
+  "scopesim",
+  "scopesim_templates"
 ]
 
 [build-system]
