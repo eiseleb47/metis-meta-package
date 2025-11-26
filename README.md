@@ -1,9 +1,21 @@
 # my-eso-meta
 
-A tiny meta-package that installs the ESO stack required for our external users:
+A tiny meta-package that installs the ESO stack required for the METIS Pipeline:
 `pycpl`, `pyesorex`, `edps`, `adari_core`.
 
-Install with uv:
-```bash
-# install uv first (if needed): pip install --user uv
-uv sync
+To use the pipeline follow the following steps:  
+
+Clone the repository:  
+`git clone https://github.com/eiseleb47/metis-meta-package`  
+
+Enter the repository locally:  
+`cd metis-meta-package`  
+
+Make the script executable:  
+`chmod +x bootstrap.sh`  
+
+Run the script:  
+`./bootstrap.sh`  
+
+For the usage of the pipeline see: [METIS_Pipeline](https://github.com/eiseleb47/metis-meta-package)  
+Remember that you need to prepend all commands with `uv run --env-file .env` while being in the repository.
