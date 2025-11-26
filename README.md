@@ -1,4 +1,4 @@
-# my-eso-meta
+# METIS Pipeline Installer
 
 A tiny meta-package that installs the ESO stack required for the METIS Pipeline:
 `pycpl`, `pyesorex`, `edps`, `adari_core`.
