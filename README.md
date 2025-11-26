@@ -15,7 +15,9 @@ Make the script executable:
 `chmod +x bootstrap.sh`  
 
 Run the script:  
-`./bootstrap.sh`  
+`./bootstrap.sh` 
+
+Note: EDPS will ask you in which directory you want to store Pipeline products, to use the default just press `ENTER`  
 
 For the usage of the pipeline see: [METIS_Pipeline](https://github.com/eiseleb47/metis-meta-package)  
 Remember that you need to prepend all commands with `uv run --env-file .env` while being in the repository.
