@@ -18,6 +18,16 @@ REPO_B="https://github.com/AstarVienna/METIS_Simulations.git"
 TARGET_A="$EXTERNAL_DIR/METIS_Pipeline"
 TARGET_B="$EXTERNAL_DIR/METIS_Simulations"
 
+echo "========================================"
+echo "Welcome to the METIS Pipeline installer!"
+echo "========================================"
+echo ""
+echo "This script will clone the necessary git repositories, give you the option to install the uv package manager, as well as use it to install the pipeline dependencies. You are able to use the pipeline afterwards my executing: uv run --env-file .env 'your_command'"
+echo ""
+echo "One last question before the installation:"
+read -p "Do you want to automatically install uv? (It is needed for the installation): " uv_yesno
+
+
 # Make external dir
 mkdir -p "$EXTERNAL_DIR"
 
@@ -62,20 +72,21 @@ EOF
 echo ".env written to $ENV_FILE"
 
 # Run uv sync to create the venv & install declared dependencies
-if command -v uv >/dev/null 2>&1; then
-  echo "Running: uv sync"
-  uv sync
-else
-  echo "Warning: 'uv' is not installed or not on PATH."
-  echo "Install uv (e.g. 'python -m pip install --user uv' or use pipx) and re-run this script."
-  curl -LsSf https://astral.sh/uv/install.sh | sh
-  source $HOME/.env/bin/activate
-  exit 1
-fi
-
+case $uv_yesno in
+	[Yy]|[Yy][Ee][Ss])
+		echo "Installing uv:"
+  		curl -LsSf https://astral.sh/uv/install.sh | sh
+  		source $HOME/.env/bin/activate
+		echo "Running: uv sync"
+		uv sync
+		;;
+	*)
+		echo "uv will not be installed"
+		uv sync
+		;;
+esac
 echo "Bootstrap finished. To run commands inside the uv-managed environment with .env loaded:"
-echo "  # source the .env file to export runtime vars in your shell"
-echo "  source \"$ENV_FILE\""
-echo "  # then use uv run to execute inside the project environment, e.g."
-echo "  uv run python -c \"import sys; print(sys.executable)\""
+echo "uv run --env-file .env \$your_command"
+echo " then use uv run to execute inside the project environment, e.g."
+echo " uv run python -c \"import sys; print(sys.executable)\""
 
