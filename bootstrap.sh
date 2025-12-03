@@ -129,9 +129,18 @@ echo ""
 uv run --env-file .env edps -P 4444
 uv run --env-file .env edps -P 4444 -s > /dev/null 2>&1
 
-sed -i.bac "s|^port=5000|port=4444|" "$HOME/.edps/application.properties"
-sed -i.bac "s|^workflow_dir=.*|workflow_dir=$TARGET_A/metisp/workflows|" "$HOME/.edps/application.properties"
-sed -i.bac "s|^esorex_path=.*|esorex_path=pyesorex|" "$HOME/.edps/application.properties"
+#sed -i.bac "s|^port=5000|port=4444|" "$HOME/.edps/application.properties"
+#sed -i.bac "s|^workflow_dir=.*|workflow_dir=$TARGET_A/metisp/workflows|" "$HOME/.edps/application.properties"
+#sed -i.bac "s|^esorex_path=.*|esorex_path=pyesorex|" "$HOME/.edps/application.properties"
+
+awk -v T="$TARGET_A" -v P="4444" -v E="pyesorex" '
+    /^port=/         { print "port=" P; next }
+    /^workflow_dir=/ { print "workflow_dir=" T "/metisp/workflows"; next }
+    /^esorex_path=/  { print "esorex_path=" E; next }
+    { print }
+' "$HOME/.edps/application.properties" \
+> "$HOME/.edps/application.properties.tmp" \
+&& mv "$HOME/.edps/application.properties.tmp" "$HOME/.edps/application.properties"
 
 case $sim_yesno in
 	[Yy]|[Yy][Ee][Ss])
