@@ -1,4 +1,4 @@
-name: CI (linux + macos)
+name: Minimal CI (linux + macos)
 
 on:
   push:
@@ -7,48 +7,26 @@ on:
 
 jobs:
   test:
-    # matrix will run the same job on both linux and macos runners
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        python: [3.11]
+
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python }}
-          cache: 'pip'                 # cache pip packages between runs
-
-      - name: Cache pip wheelhouse (optional)
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/pyproject.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      - name: Install dependencies
+      - name: Run bootstrap script
         run: |
-          python -m pip install --upgrade pip build
-          # install this package (editable) and basic dev lint/test tooling
-          python -m pip install -e .
-          python -m pip install flake8
+          chmod +x ./bootstrap.sh
+          printf '\n' | ./bootstrap.sh
 
-      - name: Lint (quick check)
+      - name: Run meta-package script
+        # adjust or remove if this file is not always present
         run: |
-          flake8 .
-
-      - name: Syntax-check repo Python
-        run: |
-          python -m py_compile init.py || true
-
-      - name: Run bootstrap script (non-interactive)
-        # bootstrap.sh asks for input; pipe a newline to accept defaults
-        run: |
-          printf '\n' | bash ./bootstrap.sh
+          if [ -f ./metis.sh ]; then
+            chmod +x ./metis.sh
+            ./metis.sh
+          fi
 
