@@ -22,11 +22,3 @@ jobs:
           chmod +x ./bootstrap.sh
           printf '\n' | ./bootstrap.sh
 
-      - name: Run meta-package script
-        # adjust or remove if this file is not always present
-        run: |
-          if [ -f ./metis.sh ]; then
-            chmod +x ./metis.sh
-            ./metis.sh
-          fi
-
