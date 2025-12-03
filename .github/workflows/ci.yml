@@ -20,5 +20,6 @@ jobs:
       - name: Run bootstrap script
         run: |
           chmod +x ./bootstrap.sh
-          printf '\n' | ./bootstrap.sh
+          printf '\n' | printf "y\ny\n2\n" | ./bootstrap.sh
+
 
