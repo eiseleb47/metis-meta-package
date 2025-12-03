@@ -126,8 +126,8 @@ echo "Executing EDPS for the first time and editing config files"
 echo "----------------------------------------------------------"
 echo ""
 
-uv run --env-file .env edps 
-uv run --env-file .env edps -s > /dev/null 2>&1
+uv run --env-file .env edps -P 4444
+uv run --env-file .env edps -P 4444 -s > /dev/null 2>&1
 
 sed -i "s|^port=5000|port=4444|" "$HOME/.edps/application.properties"
 sed -i "s|^workflow_dir=.*|workflow_dir=$TARGET_A/metisp/workflows|" "$HOME/.edps/application.properties"
