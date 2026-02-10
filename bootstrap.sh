@@ -11,7 +11,7 @@ IFS=$'\n\t'
 
 # Determine project root (directory containing this script)
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-EXTERNAL_DIR="$HOME/repos"
+EXTERNAL_DIR="$HOME"
 
 REPO_A="https://github.com/AstarVienna/METIS_Pipeline.git"
 REPO_B="https://github.com/AstarVienna/METIS_Simulations.git"
@@ -91,9 +91,9 @@ ENV_FILE="$ROOT_DIR/.env"
 cat > "$ENV_FILE" <<EOF
 # .env — variables for running inside the uv-managed environment
 # These lines are exported when this file is sourced by an interactive shell:
-PYTHONPATH="$TARGET_A/external/METIS_Pipeline/metisp/pymetis/src/"
-PYCPL_RECIPE_DIR="$TARGET_A/external/METIS_Pipeline/metisp/pyrecipes/"
-PYESOREX_PLUGIN_DIR="$TARGET_A/external/METIS_Pipeline/metisp/pyrecipes/"
+PYTHONPATH="$TARGET_A/metisp/pymetis/src/"
+PYCPL_RECIPE_DIR="$TARGET_A/METIS_Pipeline/metisp/pyrecipes/"
+PYESOREX_PLUGIN_DIR="$TARGET_A/metisp/pyrecipes/"
 EOF
 
 echo ""
