@@ -1,4 +1,4 @@
-name: Minimal CI (linux + macos)
+name: CI (linux + macos + windows)
 
 on:
   push:
@@ -6,10 +6,17 @@ on:
   pull_request:
 
 jobs:
-  test:
+  test-unix:
+    name: Test (${{ matrix.os }})
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os:
+          - ubuntu-22.04
+          - ubuntu-24.04
+          - macos-13      # Intel, macOS 13 Ventura
+          - macos-14      # Apple Silicon, macOS 14 Sonoma
+          - macos-15      # Apple Silicon, macOS 15 Sequoia
 
     runs-on: ${{ matrix.os }}
 
@@ -20,7 +27,24 @@ jobs:
       - name: Run bootstrap script
         run: |
           chmod +x ./bootstrap.sh
-          printf '\n' | printf "y\ny\n2\n\n" | ./bootstrap.sh
+          printf "y\ny\n2\n\n" | ./bootstrap.sh
+
+  test-windows:
+    name: Test (windows-latest)
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Run bootstrap script (Git Bash, skip uv install)
+        shell: bash
+        run: |
+          chmod +x ./bootstrap.sh
+          printf "n\ny\n2\n\n" | ./bootstrap.sh
 
 
 
