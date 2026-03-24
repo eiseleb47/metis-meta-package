@@ -16,7 +16,8 @@ jobs:
           - ubuntu-24.04
           - macos-14      # Apple Silicon, macOS 14 Sonoma
           - macos-15      # Apple Silicon, macOS 15 Sequoia
-
+          - fedora-43
+          
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -26,7 +27,7 @@ jobs:
       - name: Run bootstrap script (install only, no simulations)
         run: |
           chmod +x ./bootstrap.sh
-          printf "y\nn\n\n" | ./bootstrap.sh
+          printf "y\ny\n2\n\n" | ./bootstrap.sh
 
 
 
