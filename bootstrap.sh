@@ -11,7 +11,7 @@ IFS=$'\n\t'
 
 # Determine project root (directory containing this script)
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-EXTERNAL_DIR="$HOME"
+EXTERNAL_DIR="$(dirname "$ROOT_DIR")"
 
 REPO_A="https://github.com/AstarVienna/METIS_Pipeline.git"
 REPO_B="https://github.com/AstarVienna/METIS_Simulations.git"
@@ -94,6 +94,8 @@ cat > "$ENV_FILE" <<EOF
 PYTHONPATH="$TARGET_A/metisp/pymetis/src/"
 PYCPL_RECIPE_DIR="$TARGET_A/METIS_Pipeline/metisp/pyrecipes/"
 PYESOREX_PLUGIN_DIR="$TARGET_A/metisp/pyrecipes/"
+PYESOREX_MSG_LEVEL=debug
+PYESOREX_LOG_LEVEL=debug
 EOF
 
 echo ""
@@ -146,12 +148,12 @@ case $sim_yesno in
 	[Yy]|[Yy][Ee][Ss])
 		env_dir=$(pwd)
 		scripts="
-		$TARGET_B/Simulations/python/imgLM.py
-		$TARGET_B/Simulations/python/imgN.py
-		$TARGET_B/Simulations/python/lssLM.py
-		$TARGET_B/Simulations/python/lssN.py
-		$TARGET_B/Simulations/python/ifu.py
-		$TARGET_B/Simulations/python/calib.py
+		$TARGET_B/simulationBlocks/imgLM.py
+		$TARGET_B/simulationBlocks/imgN.py
+		$TARGET_B/simulationBlocks/lssLM.py
+		$TARGET_B/simulationBlocks/lssN.py
+		$TARGET_B/simulationBlocks/ifu.py
+		$TARGET_B/simulationBlocks/calib.py
 		"
 		echo ""
 		echo "Running simulations"
@@ -160,8 +162,8 @@ case $sim_yesno in
 		echo "Downloading instrument packages: "
 		echo ""
 		(
-			cd "$TARGET_B/Simulations" || exit 1
-			uv run --project "$env_dir" --env-file $env_dir/.env python $TARGET_B/Simulations/python/downloadPackages.py
+			cd "$TARGET_B" || exit 1
+			uv run --project "$env_dir" --env-file $env_dir/.env python $TARGET_B/metis_simulations/downloadPackages.py
 			if [ $sim_num -eq "1" ]; then
 				echo "Running all Simulations"
 				echo "-----------------------"
@@ -173,27 +175,27 @@ case $sim_yesno in
 				echo "Running Image N Simulations"
 				echo "---------------------------"
 				echo ""
-				uv run --project "$env_dir" --env-file $env_dir/.env python $TARGET_B/Simulations/python/imgN.py
+				uv run --project "$env_dir" --env-file $env_dir/.env python $TARGET_B/simulationBlocks/imgN.py
 			elif [ $sim_num -eq "3" ]; then
 				echo "Running Image LM Simulations"
 				echo "----------------------------"
 				echo ""
-				uv run --project "$env_dir" --env-file $env_dir/.env python $TARGET_B/Simulations/python/imgLM.py
+				uv run --project "$env_dir" --env-file $env_dir/.env python $TARGET_B/simulationBlocks/imgLM.py
 			elif [ $sim_num -eq "4" ]; then
 				echo "Running LSS N Simulations"
 				echo "-------------------------"
 				echo ""
-				uv run --project "$env_dir" --env-file $env_dir/.env python $TARGET_B/Simulations/python/lssN.py
+				uv run --project "$env_dir" --env-file $env_dir/.env python $TARGET_B/simulationBlocks/lssN.py
 			elif [ $sim_num -eq "5" ]; then
 				echo "Running LSS LM Simulations"
 				echo "--------------------------"
 				echo ""
-				uv run --project "$env_dir" --env-file $env_dir/.env python $TARGET_B/Simulations/python/lssLM.py
+				uv run --project "$env_dir" --env-file $env_dir/.env python $TARGET_B/simulationBlocks/lssLM.py
 			elif [ $sim_num -eq "6" ]; then
 				echo "Running IFU Simulations"
 				echo "-----------------------"
 				echo ""
-				uv run --project "$env_dir" --env-file $env_dir/.env python $TARGET_B/Simulations/python/ifu.py
+				uv run --project "$env_dir" --env-file $env_dir/.env python $TARGET_B/simulationBlocks/ifu.py
 			fi
 		)
 		;;
