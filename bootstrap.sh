@@ -94,6 +94,7 @@ cat > "$ENV_FILE" <<EOF
 PYTHONPATH="$TARGET_B:$TARGET_A/metisp/pymetis/src/"
 PYCPL_RECIPE_DIR="$TARGET_A/METIS_Pipeline/metisp/pyrecipes/"
 PYESOREX_PLUGIN_DIR="$TARGET_A/metisp/pyrecipes/"
+DEFAULT_IRDB_LOCATION="$TARGET_B/inst_pkgs"
 PYESOREX_MSG_LEVEL=debug
 PYESOREX_LOG_LEVEL=debug
 EOF
