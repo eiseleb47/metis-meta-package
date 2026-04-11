@@ -91,7 +91,7 @@ ENV_FILE="$ROOT_DIR/.env"
 cat > "$ENV_FILE" <<EOF
 # .env — variables for running inside the uv-managed environment
 # These lines are exported when this file is sourced by an interactive shell:
-PYTHONPATH="$TARGET_A/metisp/pymetis/src/"
+PYTHONPATH="$TARGET_B:$TARGET_A/metisp/pymetis/src/"
 PYCPL_RECIPE_DIR="$TARGET_A/METIS_Pipeline/metisp/pyrecipes/"
 PYESOREX_PLUGIN_DIR="$TARGET_A/metisp/pyrecipes/"
 PYESOREX_MSG_LEVEL=debug
