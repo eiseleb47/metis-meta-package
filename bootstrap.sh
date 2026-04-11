@@ -95,9 +95,14 @@ PYTHONPATH="$TARGET_B:$TARGET_A/metisp/pymetis/src/"
 PYCPL_RECIPE_DIR="$TARGET_A/METIS_Pipeline/metisp/pyrecipes/"
 PYESOREX_PLUGIN_DIR="$TARGET_A/metisp/pyrecipes/"
 DEFAULT_IRDB_LOCATION="$TARGET_B/inst_pkgs"
+MSIM_YAML_DIR="$TARGET_B/YAML"
+MSIM_NCORES="4"
+MSIM_OUTDIR="$TARGET_B/output"
 PYESOREX_MSG_LEVEL=debug
 PYESOREX_LOG_LEVEL=debug
 EOF
+
+mkdir -p "$TARGET_B/output"
 
 echo ""
 echo ".env written to $ENV_FILE"
