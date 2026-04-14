@@ -23,10 +23,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Run bootstrap script
+      - name: Run bootstrap script (install only, no simulations)
         run: |
           chmod +x ./bootstrap.sh
-          printf "y\ny\n2\n\n" | ./bootstrap.sh
+          printf "y\nn\n\n" | ./bootstrap.sh
 
 
 
